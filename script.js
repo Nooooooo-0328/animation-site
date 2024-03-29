@@ -4,18 +4,28 @@ const textList = document.getElementById('textList');
 const addBtn = document.getElementById('addBtn');
 let currentText = 0;
 let currentIndex = 0;
-const texts = [];
+let texts = [];
+
+// ローカルストレージからテキストを取得
+const storedTexts = localStorage.getItem('savedTexts');
+if (storedTexts) {
+  texts = JSON.parse(storedTexts);
+  updateList();
+  // ローカルストレージからテキストが読み込まれた後、アニメーションを開始する
+  showText();
+}
 
 addBtn.addEventListener('click', function() {
-    if (inputField.value.trim() !== '') {
-      texts.push(inputField.value);
-      inputField.value = ''; 
-      if (texts.length === 1) {
-        showText();
-      }
-      updateList();
+  if (inputField.value.trim() !== '') {
+    texts.push(inputField.value);
+    inputField.value = ''; 
+    if (texts.length === 1) {
+      showText();
     }
-  });
+    updateList();
+    localStorage.setItem('savedTexts', JSON.stringify(texts));
+  }
+});
 
 function updateList() {
   textList.innerHTML = '';
@@ -30,6 +40,7 @@ function updateList() {
     deleteBtn.addEventListener('click', function() {
       texts.splice(index, 1); 
       updateList();
+      localStorage.setItem('savedTexts', JSON.stringify(texts));
     });
 
     listItem.appendChild(deleteBtn);
